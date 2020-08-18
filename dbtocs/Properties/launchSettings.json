@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dbtocs": {
+      "commandName": "Project",
+      "commandLineArgs": "-t ENT_Task -c \"Data Source=localhost\\SQL2019;Initial Catalog=KAES;Integrated Security=true;Connect Timeout=120\""
+    }
+  }
+}
