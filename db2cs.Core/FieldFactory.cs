@@ -6,7 +6,7 @@ namespace dbtocs.Core
 {
     public static class FieldFactory
     {
-        public static IField Create(string type, bool nullable)
+        public static IField Create(string type)
         {
             switch(type)
             {

@@ -9,14 +9,14 @@ namespace Test.Db2Scharp
         [Fact]
         public void TestBoolean()
         {
-            var ooo = FieldFactory.Create("bit", false);
+            var ooo = FieldFactory.Create("bit");
             Assert.Equal("bool", ooo.Name);
         }
 
         [Fact]
         public void TestBooleanNull()
         {
-            var ooo = FieldFactory.Create("bit", true);
+            var ooo = FieldFactory.Create("bit");
             Assert.Equal("bool?", ooo.NameNullable);
         }
 
@@ -26,7 +26,7 @@ namespace Test.Db2Scharp
         [Fact]
         public void TestTinyInt()
         {
-            var fld = FieldFactory.Create("tinyint", true);
+            var fld = FieldFactory.Create("tinyint");
             Assert.Equal("byte", fld.Name);
         }
 
@@ -34,16 +34,15 @@ namespace Test.Db2Scharp
         [Fact]
         public void TestTinyIntNull()
         {
-            var fld = FieldFactory.Create("tinyint", true);
+            var fld = FieldFactory.Create("tinyint");
             Assert.Equal("byte?", fld.NameNullable);
-            byte? xxx;
         }
 
 
         [Fact]
         public void TestByteArray()
         {
-            var fld = FieldFactory.Create("binary", true);
+            var fld = FieldFactory.Create("binary");
             Assert.Equal("byte[]", fld.Name);
         }
 
@@ -51,14 +50,14 @@ namespace Test.Db2Scharp
         [Fact]
         public void TestByteArrayNull()
         {
-            var fld = FieldFactory.Create("binary", true);
+            var fld = FieldFactory.Create("binary");
             Assert.Equal("byte?[]", fld.NameNullable);
         }
 
         [Fact]
         public void TestImage()
         {
-            var fld = FieldFactory.Create("binary", true);
+            var fld = FieldFactory.Create("binary");
             Assert.Equal("byte[]", fld.Name);
         }
 
@@ -66,7 +65,7 @@ namespace Test.Db2Scharp
         [Fact]
         public void TestImageNull()
         {
-            var fld = FieldFactory.Create("binary", true);
+            var fld = FieldFactory.Create("binary");
             Assert.Equal("byte?[]", fld.NameNullable);
         }
     }

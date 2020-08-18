@@ -2,7 +2,7 @@
   "profiles": {
     "dbtocs": {
       "commandName": "Project",
-      "commandLineArgs": "-t ENT_Task -c \"Data Source=localhost\\SQL2019;Initial Catalog=KAES;Integrated Security=true;Connect Timeout=120\""
+      "commandLineArgs": "single -t ENT_Task -c \"Data Source=192.168.1.55;Initial Catalog=KAES;Integrated Security=false;User ID=kaesdbuser;Password=Kaesdbuser1\" -n Visit -o visit.cs"
     }
   }
 }
