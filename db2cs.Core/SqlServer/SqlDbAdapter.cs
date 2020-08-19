@@ -67,7 +67,8 @@ namespace dbtocs.Core.SqlServer
                                  TableName = c.table_name,
                                  ColumnName = c.column_name,
                                  DataType = data_type,
-                                 Nullable = c.IS_NULLABLE
+                                 Nullable = c.IS_NULLABLE,
+                                 TableType = t.TABLE_TYPE
                         FROM     information_schema.columns c
                                  INNER JOIN information_schema.tables t
                                    ON c.table_name = t.table_name

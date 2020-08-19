@@ -16,24 +16,22 @@ using System.Threading.Tasks;
 namespace dbtocs
 {
 
-    [Command("single", Description = "Generate a POCO from a table or view")]
-    public class GenerateSingleCommand : ICommand
+    [Command("multi", Description = "Generate POCOs from an existing database")]
+    public class GenerateMultipleCommand : ICommand
     {
 
-        public GenerateSingleCommand()
+        public GenerateMultipleCommand()
         {
         }
-
-        [CommandOption("table", 't', Description = "Table or View", IsRequired = true)]
-        public string TableName { get; set; }
 
         [CommandOption("cn", 'c', Description = "Connection string", IsRequired = true)]
         public string ConnectionString { get; set; }
 
-        [CommandOption("classname", 'n', Description = "Generated Class name", IsRequired = false)]
-        public string ClassOutputName { get; set; }
 
-        [CommandOption("out", 'o', Description = "Output to file", IsRequired = false)]
+        [CommandOption("type", 't', Description = "table or view. omit to select all", IsRequired = false)]
+        public string TableType { get; set; }
+
+        [CommandOption("out", 'o', Description = "Output to directory", IsRequired = false)]
         public string OutputPath { get; set; }
 
         [CommandOption("ns", Description = "Namespace of the class", IsRequired = false)]
@@ -49,20 +47,49 @@ namespace dbtocs
                     return default;
                 }
 
+                var fullPath =  Path.GetFullPath(OutputPath);
+                if (!Directory.Exists(fullPath))
+                {
+                    Directory.CreateDirectory(fullPath);
+                }
+
                 var db = DbAdapterFactory.Create(Constants.DbTypes.SqlServer, ConnectionString);
 
-                var columns = db.GetColumns(TableName);
-                var clsOutput = GenerateClass(columns, db);
+                var columns = db.GetAllColumns();
+                
+                if(!string.IsNullOrEmpty(TableType))
+                {
+                    string tableType = "BASE TABLE";
+                    if (TableType.ToLower() == "view")
+                    {
+                        tableType = "VIEW";
+                    }
 
-                if (string.IsNullOrEmpty(OutputPath))
-                {
-                    console.Output.WriteLine(clsOutput);
+                    columns = columns.Where(m => m.TableType == tableType).ToList();
                 }
-                else
+
+
+
+                var grouped = columns.GroupBy(g => g.TableName);
+
+                foreach(var g in grouped)
                 {
-                    File.WriteAllText(OutputPath, clsOutput);
-                    console.Output.WriteLine($"file create '{OutputPath}'");
+                    var clsOutput = GenerateClass(g.ToList(), db);
+                    var filename = Path.Combine(fullPath, $"{g.Key}.cs");
+                    if (string.IsNullOrEmpty(OutputPath))
+                    {
+                        console.Output.WriteLine(filename);
+                    }
+                    else
+                    {
+                        File.WriteAllText(filename, clsOutput);
+                        console.Output.WriteLine($"file create '{filename}'");
+                    }
                 }
+
+                //var clsOutput = GenerateClass(columns, db);
+
+
 
 
             }
@@ -91,7 +118,7 @@ namespace dbtocs
 
             var template = ResourceHelper.GetTemplate(Constants.TemplatesPath.StandardClass);
             template = template.Replace("$namespace$", GetNamespace());
-            template = template.Replace("$classname$", ClassOutputName ?? columns.FirstOrDefault()?.TableName ?? "Table1");
+            template = template.Replace("$classname$", columns.FirstOrDefault()?.TableName ?? $"Table{Guid.NewGuid()}");
             template = template.Replace("$body$", props);
 
             return template;
@@ -115,16 +142,15 @@ namespace dbtocs
 
         private bool IsPathValid(string path)
         {
-            System.IO.FileInfo fi = null;
             try
             {
-                fi = new System.IO.FileInfo(path);
-            }
-            catch (ArgumentException) { }
-            catch (System.IO.PathTooLongException) { }
-            catch (NotSupportedException) { }
+                var fullPath = Path.GetFullPath(path);
+                return true;
 
-            return !ReferenceEquals(fi, null);
+            }
+            catch { }
+
+            return false;
         }
 
         #endregion

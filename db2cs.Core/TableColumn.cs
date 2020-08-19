@@ -11,5 +11,6 @@ namespace dbtocs.Core
         public string ColumnName { get; set; }
         public string DataType { get; set; }
         public string Nullable { get; set; }
+        public string TableType { get; set; }
     }
 }
